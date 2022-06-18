@@ -1,123 +1,104 @@
-'use strict'
+const { chalk, inquirer, print } = require("./tools/index.js");
+var moment = require("moment");
+var colors = require("colors");
+var userHome = require("user-home");
 
-//const insta = require('./func.js'); 
-const Client = require('instagram-private-api').V1;
-const delay = require('delay');
-const chalk = require('chalk');
-const inquirer = require('inquirer');
-//const Spinner = require('cli-spinner').Spinner;
+// DETECT IP *START!
+var os = require("os");
+var interfaces = os.networkInterfaces();
+var addresses = [];
+for (var k in interfaces) {
+    for (var k2 in interfaces[k]) {
+        var address = interfaces[k][k2];
+        if (address.family === "IPv4" && !address.internal) {
+            addresses.push(address.address);
+        }
+    }
+}
+// DETECT IP *END!
 
 const questionTools = [
-  {
-    type:"list",
-    name:"Tools",
-    message:"Select tools:",
-    choices:
-      [
-        "[1] Botlike v1",
-        "[2] Botlike v2",
-        "[3] Delete All Media",
-        "[4] Unfollow All Following",
-        "[5] Unfollow Not Followback",
-        "[6] Follow Followers Target",
-        "[7] Follow Account By Media",
-        "[8] Follow Account By Hastag",
-        "[9] Follow Account By Location",
-        "[10] Follow Followers Target No Like",
-	"[11] Follow Followers Target No Comment & Like",
-        "[12] Bom Like Post Target",
-	"[12] Bom Komen Post Target",
-        "\n"
-      ] 
-  }
-]
+    "➥ Information",
+    "➥ Bot Like Timeline",
+    "➥ Bot Like Target User",
+    "➥ Mass Delete Post/Photo",
+
+    "➥ F-L -> Followers Target",
+    "➥ L-C -> Followers Target",
+
+    "➥ F-L-C -> Followers Target",
+    "➥ F-L-C -> Followers Target [BETA]",
+
+    "➥ F-L-C -> Followers Target v2",
+
+    "➥ F-L-DM -> Followers Target",
+    "➥ F-L-DM -> Followers Target [BETA]",
+
+    "➥ F-L-C -> Hashtag Target",
+    "➥ F-L-C -> Location Target",
+
+    "➥ Unfollow All Following",
+    "➥ Unfollow Not Followback",
+    
+    "➥ GASPOLLLLL",
+    "\n",
+];
+
+const menuQuestion = {
+    type: "list",
+    name: "choice",
+    message: "Select tools:\n  Read the (❆ Information) first before using the tool!\n\n",
+    choices: questionTools,
+};
 
 const main = async () => {
-  var spinner;
-  try{
-    var toolChoise = await inquirer.prompt(questionTools);
-    toolChoise = toolChoise.Tools;
-    switch(toolChoise){
-      case "[1] Botlike v1":
-        const botlike = require('./botlike.js');
-        await botlike();
-        break;
-
-      case "[2] Botlike v2":
-        const botlike2 = require('./botlike2.js');
-        await botlike2();
-        break;
-
-      case "[3] Delete All Media":
-        const dellallphoto = require('./dellallphoto.js');
-        await dellallphoto();
-        break;
-
-      case "[4] Unfollow All Following":
-        const unfollall = require('./unfollall.js');
-        await unfollall();
-        break;
-
-      case "[5] Unfollow Not Followback":
-        const unfollnotfollback = require('./unfollnotfollback.js');
-        await unfollnotfollback();
-        break;
-
-      case "[6] Follow Followers Target":
-        const fftauto = require('./fftauto.js');
-        await fftauto();
-        break;
-
-      case "[7] Follow Account By Media":
-        const flmauto = require('./flmauto.js');
-        await flmauto();
-        break;
-
-      case "[8] Follow Account By Hastag":
-        const fah = require('./fah.js');
-        await fah();
-        break;
-
-      case "[9] Follow Account By Location":
-        const flaauto = require('./flaauto.js');
-        await flaauto();
-        break;
-		
-	   case "[10] Follow Followers Target No Like":
-        const fft = require('./fft.js');
-        await fft();
-        break;
-
-	   case "[11] Follow Followers Target No Comment & Like":
-        const fftold = require('./fftold.js');
-        await fftold();
-        break;
-	   case "[12] Bom Like Post Target":
-        const bomlike = require('./bomlike.js');
-        await bomlike();
-        break;
-	 case "[13] Bom Komen Post Target":
-        const bomkomen = require('./bomkomen.js');
-        await bomkomen();
-        break;
-      default:
-        console.log('\nERROR:\n[?] Aw, Snap! \n[!] Something went wrong while displaying this program!\n[!] Please try again!');
+    try {
+        const { choice } = await inquirer.prompt(menuQuestion);
+        choice == questionTools[0] && require("./tools/info.js");
+        choice == questionTools[1] && require("./tools/liketimeline.js");
+        choice == questionTools[2] && require("./tools/liketarget.js");
+        choice == questionTools[3] && require("./tools/delallmedia.js");
+        choice == questionTools[4] && require("./tools/flonly.js");
+        choice == questionTools[5] && require("./tools/lconly.js");
+        choice == questionTools[6] && require("./tools/fftauto.js");
+        choice == questionTools[7] && require("./tools/fftbetaauto.js");
+        choice == questionTools[8] && require("./tools/fftautov2.js");
+        choice == questionTools[9] && require("./tools/fftdmauto.js");
+        choice == questionTools[10] && require("./tools/fftdmbetaauto.js");
+        choice == questionTools[11] && require("./tools/fhtauto.js");
+        choice == questionTools[12] && require("./tools/fltauto.js");
+        choice == questionTools[13] && require("./tools/unfollowall.js");
+        choice == questionTools[14] && require("./tools/unfollnotfollback.js");
+        choice == questionTools[15] && require("./tools/flmauto.js");
+        choice == questionTools[16] && process.exit();
+    } catch (err) {
+        print(err, "err");
     }
-  } catch(e) {
-    //spinner.stop(true);
-    //console.log(e);
-  }
-}
+};
 
-console.log(chalk`
-  {bold.cyan
-  ╦┌┐┌┌─┐┌┬┐┌─┐┌─┐┬─┐┌─┐┌┬┐
-  ║│││└─┐ │ ├─┤│ ┬├┬┘├─┤│││
-  ╩┘└┘└─┘ ┴ ┴ ┴└─┘┴└─┴ ┴┴ ┴
-  ╔╦╗┌─┐┌─┐┬  ┌─┐    © 2018
-   ║ │ ││ ││  └─┐   SGBTeam 
-   ╩ └─┘└─┘┴─┘└─┘   -------       
-}
-      `);
+console.log(chalk`{bold.green
+  ▄▄▄▄▄            ▄▄▌  .▄▄ · ▪   ▄▄ • 
+  •██  ▪     ▪     ██•  ▐█ ▀. ██ ▐█ ▀ ▪
+   ▐█.▪ ▄█▀▄  ▄█▀▄ ██▪  ▄▀▀▀█▄▐█·▄█ ▀█▄
+   ▐█▌·▐█▌.▐▌▐█▌.▐▌▐█▌▐▌▐█▄▪▐█▐█▌▐█▄▪▐█
+   ▀▀▀  ▀█▄▀▪ ▀█▄▀▪.▀▀▀  ▀▀▀▀ ▀▀▀·▀▀▀▀ 
 
-main()
+  Ξ TITLE  : toolsig v4.0
+  Ξ EMAIL  : madangwareg@gmail.com
+  Ξ UPDATE : Wednesday, August 4, 2021
+
+  116 111 111 108 115 105 103  118 51 
+  }`);
+console.log(chalk`{bold.red   •••••••••••••••••••••••••••••••••••••••••}`);
+console.log("  Ξ START  : ".bold.red + moment().format("D MMMM YYYY, h:mm:ss a"));
+console.log("  Ξ YPATH  : ".bold.red + userHome);
+console.log("  Ξ YOUIP  : ".bold.red + addresses);
+console.log(chalk`{bold.red   •••••••••••••••••••••••••••••••••••••••••}`);
+console.log(chalk`{bold.yellow
+  Github ••••••••••••••••••••••••••••••••••
+  : 
+  : 
+  •••••••••••••••••••••••••••••••••••••••••
+  : IPutuJayaAdiPranata & DedeKurniawan
+  : Thanks To All Member Sharing Gils Blog }\n`);
+main();
